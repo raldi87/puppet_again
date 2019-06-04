@@ -1,4 +1,4 @@
-#Puppet Again Module 
+## Puppet Again Module 
 
 This is puppet module for running the puppet agent again in case it's needed
 It's based on existing puppet again module from
@@ -25,6 +25,7 @@ Please ping me if you have big changes in mind, before you write a giant patch.
 * puppet5 
 
 # Usage:
+```
  include again
   service { 'sssd':
     ensure      => running,
@@ -32,6 +33,6 @@ Please ping me if you have big changes in mind, before you write a giant patch.
     notify      => Exec['again'],
   }
 or Service['sssd'] ~> Exec['again']
-
+```
 Radu Dima < dima.radu.lucian@gmail.com >
 
