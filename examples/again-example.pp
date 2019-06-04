@@ -1,6 +1,6 @@
 # this is just a proof of concept example, to help you visualize how this works
 
-include common::again
+include ::again
 
 file { '/tmp/foo':
 	content => "Something happened!\n",
@@ -15,3 +15,10 @@ exec { 'proof':
 	command => '/bin/date >> /tmp/puppet.again',
 }
 
+include again
+  service { 'sssd':
+    ensure      => running,
+    enable      => true,
+    notify      => Exec['again'],
+  }
+or Service['sssd'] ~> Exec['again']
