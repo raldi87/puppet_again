@@ -1,3 +1,5 @@
+Puppet Again Module 
+
 This is puppet module for running the puppet agent again in case it's needed
 It's based on existing puppet again module from
 James Shubin
