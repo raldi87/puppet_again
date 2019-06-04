@@ -1,0 +1,58 @@
+#! <%= @rubyexe %>
+#
+# Run puppet again if notified to do so
+# Copyright (C) 2012-2013+ James Shubin
+# Written by James Shubin <james@shubin.ca>
+# Written by Radu Dima
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+LOCKFILE = '<%= @lockfile %>'.freeze
+PIDDIR = '/proc/'.freeze
+REDIR = '>>/dev/null 2>&1'
+DELAY = <%= @delay %>
+def is_locked
+  File.exist?(LOCKFILE)
+end
+
+def is_running(pid)
+  return Process.kill(0, pid)
+rescue Errno::EPERM # changed uid
+  false
+rescue Errno::ESRCH
+  false
+rescue StandardError
+  false
+end
+ppid = Process.ppid
+cmdln = File.read(PIDDIR + ppid.to_s + '/cmdline').split("\0")
+env = File.read(PIDDIR + ppid.to_s + '/environ').split("\0")
+env_hash = {}
+env.each { |x| splitter = x.split('='); env_hash.store(splitter[0], splitter[1]) }
+pid = Process.fork
+if pid.nil?
+  # In child
+  sleep(1) while is_running(ppid) || is_locked
+  sleep(DELAY)
+  if cmdln[0].start_with?('puppet agent:')
+    cmdln = ['<%= @puppetbin %>', 'agent', '--test', REDIR]
+  else
+    cmdln << REDIR
+  end
+  command = cmdln.join(' ')
+  exec(env_hash, command)
+else
+  Process.detach(pid)
+end
