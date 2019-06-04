@@ -1,5 +1,5 @@
 To install this puppet module, copy this folder to your puppet modulepath.
-
+Remove the puppet prefix from the folder
 You can usually find out where this is by running:
 
 $ puppet config print modulepath
