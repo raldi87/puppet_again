@@ -10,7 +10,7 @@ Look in the examples/ folder for usage.
 
 # Module specific notes:
 * This module is a useful for triggering puppet agent by notified this module
-* Can be used when puppet is applying configuration for the first time
+* Can be used when puppet is applying configuration for the first time in case your environment is complex and you need multiple puppet runs at instalation.
 * Tested on RHEL 6/7. Should work on other Distro's
 * Tested with Puppet5 and ruby 2.4
 * Parameters can be changed in hiera delay, puppet binary location, ruby location
